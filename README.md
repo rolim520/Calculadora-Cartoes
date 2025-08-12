@@ -22,17 +22,19 @@ Chega de fazer contas de cabeça ou desperdiçar saldo!
 
 ## 💡 Lógica de Otimização
 
-Para garantir o resultado **perfeito** e não apenas uma boa estimativa, a calculadora implementa um algoritmo de busca exaustiva (ou *brute-force*). A lógica funciona da seguinte forma:
+Para garantir o resultado **perfeito**, a calculadora implementa um algoritmo de busca focado em eficiência:
 
-1.  **Iteração Centavo por Centavo:** O valor total da recarga é dividido em centavos. O algoritmo então testa todas as combinações possíveis de divisão desse valor entre os dois cartões. Por exemplo, para uma recarga de R$ 10,00, ele testará (R$ 0,01 para o Cartão 1, R$ 9,99 para o Cartão 2), (R$ 0,02 para o C1, R$ 9,98 para o C2), e assim por diante.
+1.  **Iteração por Passagens:** O algoritmo testa de forma inteligente as combinações de recarga ao iterar sobre o número de passagens de um cartão. Para cada quantidade de passagens possível, ele calcula a recarga exata necessária.
 
-2.  **Cálculo de Passagens:** Para cada combinação, a aplicação calcula quantas passagens podem ser compradas em cada cartão, somando o saldo existente com a fatia da recarga.
+2.  **Cálculo e Distribuição:** Com base na recarga calculada para o primeiro cartão, o valor restante é alocado ao segundo, e o número de passagens para este é determinado.
 
-3.  **Precisão com `Decimal`:** Todas as operações financeiras utilizam o tipo `Decimal` do Python. Isso é crucial para evitar os minúsculos erros de arredondamento que ocorrem com tipos de ponto flutuante padrão (`float`), garantindo que os cálculos sejam exatos, como em uma calculadora financeira.
+3.  **Busca pela Melhor Opção:** O sistema compara a quantidade de passagens entre os dois cartões e armazena a combinação de recarga que resulta no maior equilíbrio (a menor diferença de passagens).
 
-4.  **Seleção da Melhor Opção:** O algoritmo armazena a combinação que resulta na menor diferença de passagens entre os dois cartões. Se encontrar uma combinação que zera a diferença, ele para imediatamente, pois o resultado ótimo foi encontrado.
+4.  **Análise Completa:** Para assegurar a solução ótima, o processo é repetido, invertendo a perspectiva e começando a iteração a partir do segundo cartão.
 
-Este método garante que a resposta fornecida é sempre a melhor possível, sem exceções.
+5.  **Precisão Financeira:** Todas as operações utilizam o tipo `Decimal` do Python para evitar erros de arredondamento e garantir exatidão nos cálculos de saldo e recarga.
+
+Este método garante que a resposta fornecida é sempre a melhor possível, de forma rápida e precisa.
 
 ---
 
