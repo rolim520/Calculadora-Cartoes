@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Passagens</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #212529;
+        }
+        .container {
+            max-width: 600px;
+        }
+        .card {
+            background-color: #2b3035;
+            border: 1px solid #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card p-4 shadow">
+            <h1 class="card-title text-center mb-4">Calculadora de Passagens</h1>
+            <form method="POST">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="r1" class="form-label">Saldo Jaé (R$)</label>
+                        <input type="number" class="form-control" id="r1" name="r1" step="0.01" value="{{ context.r1 }}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="p1" class="form-label">Preço Passagem Jaé</label>
+                        <input type="number" class="form-control" id="p1" name="p1" step="0.01" value="{{ context.p1 }}" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="r2" class="form-label">Saldo Riocard (R$)</label>
+                        <input type="number" class="form-control" id="r2" name="r2" step="0.01" value="{{ context.r2 }}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="p2" class="form-label">Preço Passagem Riocard</label>
+                        <input type="number" class="form-control" id="p2" name="p2" step="0.01" value="{{ context.p2 }}" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="total_recharge" class="form-label">Valor Total da Recarga (R$)</label>
+                    <input type="number" class="form-control" id="total_recharge" name="total_recharge" step="0.01" value="{{ context.total_recharge }}" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Calcular</button>
+            </form>
+        </div>
+
+        {% if context.solution %}
+            <div class="card p-4 mt-4 shadow">
+                <h2 class="card-title text-center mb-3">Resultado Otimizado</h2>
+                {% if context.solution.error %}
+                    <div class="alert alert-danger">{{ context.solution.error }}</div>
+                {% else %}
+                    <div class="row text-center">
+                        <div class="col-md-6">
+                            <h4 class="text-success">Jaé</h4>
+                            <p>Recarregar: <strong>R$ {{ "%.2f"|format(context.solution.recharge_c1) }}</strong></p>
+                            <p>Passagens: <strong>{{ context.solution.tickets_c1 }}</strong></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h4 class="text-info">Riocard</h4>
+                            <p>Recarregar: <strong>R$ {{ "%.2f"|format(context.solution.recharge_c2) }}</strong></p>
+                            <p>Passagens: <strong>{{ context.solution.tickets_c2 }}</strong></p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
