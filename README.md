@@ -22,19 +22,17 @@ Chega de fazer contas de cabeça ou desperdiçar saldo!
 
 ## 💡 Lógica de Otimização
 
-Para garantir o resultado **perfeito**, a calculadora implementa um algoritmo de busca focado em eficiência:
+Para garantir um resultado **perfeito** com a máxima performance, a calculadora implementa um algoritmo híbrido avançado:
 
-1.  **Iteração por Passagens:** O algoritmo testa de forma inteligente as combinações de recarga ao iterar sobre o número de passagens de um cartão. Para cada quantidade de passagens possível, ele calcula a recarga exata necessária.
+1.  **Busca Binária Rápida:** Primeiramente, o algoritmo usa uma busca binária (*binary search*) para encontrar rapidamente a região aproximada onde a solução ótima se encontra. Em vez de testar todas as possibilidades, ele corta o universo de busca pela metade a cada passo, convergindo para a área de interesse de forma quase instantânea.
 
-2.  **Cálculo e Distribuição:** Com base na recarga calculada para o primeiro cartão, o valor restante é alocado ao segundo, e o número de passagens para este é determinado.
+2.  **Análise de Precisão por Breakpoints:** Uma vez que a busca binária delimita uma pequena faixa de valores, o algoritmo muda para uma análise de "breakpoints". Ele inspeciona apenas os pontos de recarga críticos dentro dessa faixa — os valores exatos onde o número de passagens poderia mudar.
 
-3.  **Busca pela Melhor Opção:** O sistema compara a quantidade de passagens entre os dois cartões e armazena a combinação de recarga que resulta no maior equilíbrio (a menor diferença de passagens).
+3.  **Seleção da Melhor Opção:** Ao testar apenas esses pontos críticos, o algoritmo identifica a combinação de recarga que resulta no equilíbrio perfeito (a menor diferença possível de passagens entre os cartões).
 
-4.  **Análise Completa:** Para assegurar a solução ótima, o processo é repetido, invertendo a perspectiva e começando a iteração a partir do segundo cartão.
+4.  **Exatidão com `Decimal`:** Todas as operações financeiras utilizam o tipo `Decimal` do Python, eliminando os erros de arredondamento de tipos de ponto flutuante e garantindo que o resultado seja matematicamente exato.
 
-5.  **Precisão Financeira:** Todas as operações utilizam o tipo `Decimal` do Python para evitar erros de arredondamento e garantir exatidão nos cálculos de saldo e recarga.
-
-Este método garante que a resposta fornecida é sempre a melhor possível, de forma rápida e precisa.
+Essa abordagem em duas fases combina a velocidade da busca binária com a precisão da análise de breakpoints, garantindo a melhor solução possível da forma mais eficiente.
 
 ---
 

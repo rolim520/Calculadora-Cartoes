@@ -2,47 +2,67 @@ import math
 from decimal import Decimal, getcontext
 from flask import Flask, render_template, request
 
-# Set precision for Decimal calculations
+# Define a precisão para cálculos com Decimal, evitando erros de ponto flutuante
 getcontext().prec = 10
 
-# Initialize the Flask application
+# Inicializa a aplicação Flask
 app = Flask(__name__)
 
-# --- New Feature: Define a list of common ticket prices ---
-TICKET_PRICES = [
-    '4.70', '5.00', '3.80', '6.20', '7.50'
-]
+def calculate_optimal_distribution(balance1_str, balance2_str, total_recharge_str, price1_str, price2_str):
+    """
+    Calcula a distribuição ótima de recarga para dois cartões, minimizando a diferença
+    no número de passagens que cada um pode comprar.
 
-def find_optimal_by_tickets(r1_str, r2_str, total_recharge_str, p1_str, p2_str):
+    A lógica otimizada itera sobre o número de passagens possíveis para o primeiro cartão,
+    calcula a recarga mínima necessária para atingir essa quantidade e, em seguida,
+    encontra a melhor combinação que equilibra as passagens entre os dois cartões.
+
+    Args:
+        balance1_str (str): Saldo atual do cartão 1.
+        balance2_str (str): Saldo atual do cartão 2.
+        total_recharge_str (str): Valor total da recarga.
+        price1_str (str): Preço da passagem para o cartão 1.
+        price2_str (str): Preço da passagem para o cartão 2.
+
+    Returns:
+        dict: Um dicionário com a solução ótima encontrada.
     """
-    Finds the optimal distribution by iterating through the number of possible tickets.
-    """
-    # Convert all inputs to Decimal for precision
-    r1 = Decimal(r1_str)
-    r2 = Decimal(r2_str)
+    # Converte todas as entradas para Decimal para garantir a precisão matemática
+    balance1 = Decimal(balance1_str)
+    balance2 = Decimal(balance2_str)
     total_recharge = Decimal(total_recharge_str)
-    p1 = Decimal(p1_str) if Decimal(p1_str) > 0 else Decimal('1')
-    p2 = Decimal(p2_str) if Decimal(p2_str) > 0 else Decimal('1')
+    # Garante que o preço nunca seja zero para evitar divisão por zero
+    price1 = Decimal(price1_str) if Decimal(price1_str) > 0 else Decimal('1')
+    price2 = Decimal(price2_str) if Decimal(price2_str) > 0 else Decimal('1')
 
-    best_solution = {"difference": float('inf'), "recharge_c1": Decimal('0'), "recharge_c2": total_recharge, "tickets_c1": math.floor(r1/p1), "tickets_c2": math.floor((r2+total_recharge)/p2)}
+    best_solution = {"difference": float('inf')}
 
-    # Iterate from card 1's perspective
-    current_n1 = math.floor(r1 / p1)
-    max_n1 = math.floor((r1 + total_recharge) / p1)
-    for n1 in range(int(current_n1), int(max_n1) + 2):
-        recharge_c1 = (n1 * p1) - r1
-        if recharge_c1 < Decimal('0'):
-            recharge_c1 = Decimal('0')
+    # Calcula o número máximo de passagens que o cartão 1 poderia ter
+    # se toda a recarga fosse para ele.
+    max_tickets_c1 = math.floor((balance1 + total_recharge) / price1)
+
+    # Itera sobre cada quantidade possível de passagens para o cartão 1.
+    for n1 in range(max_tickets_c1 + 1):
+        # Calcula a recarga mínima necessária para o cartão 1 atingir 'n1' passagens.
+        # O valor é max(0, ...) para garantir que a recarga não seja negativa.
+        recharge_c1 = max(Decimal('0'), n1 * price1 - balance1)
         
-        if recharge_c1 > total_recharge:
-            continue
+        # Arredonda para o próximo centavo, garantindo que o valor seja suficiente.
+        recharge_c1 = math.ceil(recharge_c1 * 100) / Decimal(100)
 
-        recharge_c1 = recharge_c1.quantize(Decimal('0.01'))
+        # Se a recarga necessária for maior que o total disponível, podemos parar.
+        if recharge_c1 > total_recharge:
+            break
+
+        # A recarga para o cartão 2 é o que sobra do total.
         recharge_c2 = total_recharge - recharge_c1
 
-        n2 = math.floor((r2 + recharge_c2) / p2)
+        # Calcula quantas passagens o cartão 2 consegue comprar com a recarga restante.
+        n2 = math.floor((balance2 + recharge_c2) / price2)
+        
         difference = abs(n1 - n2)
 
+        # Se a diferença atual for menor que a melhor encontrada, atualiza a solução.
         if difference < best_solution["difference"]:
             best_solution = {
                 "recharge_c1": recharge_c1,
@@ -51,34 +71,8 @@ def find_optimal_by_tickets(r1_str, r2_str, total_recharge_str, p1_str, p2_str):
                 "tickets_c2": n2,
                 "difference": difference
             }
-        if best_solution["difference"] == 0:
-            break
-    
-    # Iterate from card 2's perspective to ensure full coverage
-    current_n2 = math.floor(r2 / p2)
-    max_n2 = math.floor((r2 + total_recharge) / p2)
-    for n2 in range(int(current_n2), int(max_n2) + 2):
-        recharge_c2 = (n2 * p2) - r2
-        if recharge_c2 < Decimal('0'):
-            recharge_c2 = Decimal('0')
-
-        if recharge_c2 > total_recharge:
-            continue
-            
-        recharge_c2 = recharge_c2.quantize(Decimal('0.01'))
-        recharge_c1 = total_recharge - recharge_c2
-
-        n1 = math.floor((r1 + recharge_c1) / p1)
-        difference = abs(n1 - n2)
-
-        if difference < best_solution["difference"]:
-            best_solution = {
-                "recharge_c1": recharge_c1,
-                "recharge_c2": recharge_c2,
-                "tickets_c1": n1,
-                "tickets_c2": n2,
-                "difference": difference
-            }
+        
+        # Otimização: se a diferença for 0, a solução perfeita foi encontrada.
         if best_solution["difference"] == 0:
             break
             
@@ -86,7 +80,8 @@ def find_optimal_by_tickets(r1_str, r2_str, total_recharge_str, p1_str, p2_str):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    # --- New Feature: Use a context dictionary to manage state ---
+    # Dicionário de contexto para armazenar os valores do formulário e a solução.
+    # Isso permite que os valores digitados pelo usuário permaneçam na tela.
     context = {
         "solution": None,
         "r1": "0",
@@ -96,24 +91,29 @@ def index():
         "p2": "5.00"
     }
 
+    # Se o formulário for enviado (método POST)
     if request.method == 'POST':
         try:
-            # Get values from the form and update context to persist state
+            # Obtém os valores do formulário e atualiza o contexto
             context['r1'] = request.form.get('r1', '0')
             context['r2'] = request.form.get('r2', '0')
             context['total_recharge'] = request.form.get('total_recharge', '0')
             context['p1'] = request.form.get('p1')
             context['p2'] = request.form.get('p2')
 
-            # Call the optimal calculation function
-            solution = find_optimal_by_tickets(
+            # Chama a função de cálculo para encontrar a distribuição ótima
+            solution = calculate_optimal_distribution(
                 context['r1'], context['r2'], context['total_recharge'], context['p1'], context['p2']
             )
             context['solution'] = solution
         except Exception as e:
-            context['solution'] = {"error": f"Erro: {e}"}
+            # Em caso de erro, exibe uma mensagem amigável na interface
+            context['solution'] = {"error": f"Erro ao processar a solicitação: {e}"}
             
+    # Renderiza o template HTML, passando o contexto com os dados
     return render_template('index.html', context=context)
 
 if __name__ == '__main__':
+    # Executa a aplicação Flask. O host '0.0.0.0' torna a aplicação acessível
+    # a partir de outras máquinas na mesma rede (útil para Docker).
     app.run(host='0.0.0.0', port=5000)
