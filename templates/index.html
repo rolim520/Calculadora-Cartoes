@@ -47,6 +47,15 @@
                     <label for="total_recharge" class="form-label">Valor Total da Recarga (R$)</label>
                     <input type="number" class="form-control" id="total_recharge" name="total_recharge" step="0.01" value="{{ context.total_recharge }}" required>
                 </div>
+
+                <div class="mb-3">
+                    <label for="desired_difference" class="form-label">Diferença de Passagens Desejada</label>
+                    <input type="number" class="form-control" id="desired_difference" name="desired_difference" step="1" value="{{ context.get('desired_difference', '0') }}" required>
+                    <div class="form-text">
+                        Use um valor positivo para mais passagens no Jaé ou um negativo para mais no Riocard.
+                    </div>
+                </div>
+
                 <button type="submit" class="btn btn-primary w-100">Calcular</button>
             </form>
         </div>

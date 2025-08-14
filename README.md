@@ -4,7 +4,7 @@
 
 ## 🎯 Sobre o Projeto
 
-A **Calculadora de Recarga** é uma aplicação web inteligente projetada para otimizar o uso de dois cartões de transporte (como Riocard e Jaé). Com base no saldo atual de cada cartão, no valor da recarga e nas tarifas, a ferramenta calcula a distribuição exata da recarga para maximizar o número total de passagens, garantindo o melhor aproveitamento do seu dinheiro.
+A **Calculadora de Recarga** é uma aplicação web inteligente projetada para otimizar o uso de dois cartões de transporte. Com base nos saldos, no valor da recarga e nas tarifas, a ferramenta calcula a distribuição ideal para atingir um **equilíbrio de passagens personalizável**, permitindo que você decida se prefere um número igual de passagens ou favorecer um dos cartões com uma quantidade específica a mais.
 
 Chega de fazer contas de cabeça ou desperdiçar saldo!
 
@@ -12,27 +12,30 @@ Chega de fazer contas de cabeça ou desperdiçar saldo!
 
 ## ✨ Funcionalidades
 
--   **Cálculo Otimizado:** Garante a melhor distribuição possível da recarga.
+-   **Cálculo Otimizado:** Encontra a melhor distribuição de recarga para atingir seu objetivo.
+-   **Diferença Alvo Personalizável:** Defina a diferença exata de passagens que você deseja entre os cartões (ex: 0 para equilíbrio, +2 para favorecer o primeiro, ou -3 para o segundo).
 -   **Interface Moderna e Responsiva:** Design limpo que funciona perfeitamente em desktops e celulares.
 -   **Tarifas Flexíveis:** Permite inserir os valores exatos das tarifas para cada cartão.
--   **Nomes Personalizáveis:** As legendas dos cartões foram atualizadas para "Jaé" e "Riocard".
 -   **Persistência de Dados:** O formulário memoriza os últimos valores inseridos para agilizar o uso.
 
 ---
 
 ## 💡 Lógica de Otimização
 
-Para garantir um resultado **perfeito** com a máxima performance, a calculadora implementa um algoritmo híbrido avançado:
+Para garantir um resultado preciso e com alta performance, a calculadora implementa um algoritmo otimizado:
 
-1.  **Busca Binária Rápida:** Primeiramente, o algoritmo usa uma busca binária (*binary search*) para encontrar rapidamente a região aproximada onde a solução ótima se encontra. Em vez de testar todas as possibilidades, ele corta o universo de busca pela metade a cada passo, convergindo para a área de interesse de forma quase instantânea.
+1.  **Iteração por Passagens (Eficiente):** Para encontrar a solução ideal, o algoritmo itera de forma inteligente sobre o número de passagens possíveis para o primeiro cartão. Essa abordagem garante alta performance.
 
-2.  **Análise de Precisão por Breakpoints:** Uma vez que a busca binária delimita uma pequena faixa de valores, o algoritmo muda para uma análise de "breakpoints". Ele inspeciona apenas os pontos de recarga críticos dentro dessa faixa — os valores exatos onde o número de passagens poderia mudar.
+2.  **Cálculo do "Custo":** Para cada quantidade de passagens do primeiro cartão (`n1`), o algoritmo calcula:
+    -   A recarga mínima necessária para atingir `n1`.
+    -   A recarga restante para o segundo cartão.
+    -   O número de passagens resultante para o segundo cartão (`n2`).
 
-3.  **Seleção da Melhor Opção:** Ao testar apenas esses pontos críticos, o algoritmo identifica a combinação de recarga que resulta no equilíbrio perfeito (a menor diferença possível de passagens entre os cartões).
+3.  **Busca pelo Menor Custo:** O objetivo é encontrar a combinação que minimiza o **"custo"**, definido como a distância entre a diferença de passagens real (`n1 - n2`) e a **diferença desejada** pelo usuário.
 
-4.  **Exatidão com `Decimal`:** Todas as operações financeiras utilizam o tipo `Decimal` do Python, eliminando os erros de arredondamento de tipos de ponto flutuante e garantindo que o resultado seja matematicamente exato.
+4.  **Seleção da Melhor Opção:** A solução com o menor custo é selecionada como a ideal, garantindo o resultado que mais se aproxima do seu objetivo.
 
-Essa abordagem em duas fases combina a velocidade da busca binária com a precisão da análise de breakpoints, garantindo a melhor solução possível da forma mais eficiente.
+5.  **Exatidão com `Decimal`:** Todas as operações financeiras utilizam o tipo `Decimal` do Python, eliminando os erros de arredondamento de tipos de ponto flutuante e garantindo que o resultado seja matematicamente exato.
 
 ---
 
