@@ -1,7 +1,6 @@
 services:
   calculadora-web:
-    build: .
+    image: your-dockerhub-username/calculadora-cartoes:latest
     ports:
       - "5000:5000"
-    volumes:
-      - .:/app
+    restart: unless-stopped
