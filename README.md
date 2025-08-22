@@ -6,8 +6,6 @@
 
 A **Calculadora de Recarga** é uma aplicação web inteligente projetada para otimizar o uso de dois cartões de transporte. Com base nos saldos, no valor da recarga e nas tarifas, a ferramenta calcula a distribuição ideal para atingir um **equilíbrio de passagens personalizável**, permitindo que você decida se prefere um número igual de passagens ou favorecer um dos cartões com uma quantidade específica a mais.
 
-Chega de fazer contas de cabeça ou desperdiçar saldo!
-
 ---
 
 ## ✨ Funcionalidades
@@ -41,46 +39,78 @@ Para garantir um resultado preciso e com alta performance, a calculadora impleme
 
 ## 🚀 Como Executar
 
-Este projeto é totalmente containerizado com Docker, tornando a execução simples e rápida.
+Este projeto é totalmente containerizado, oferecendo duas maneiras de executá-lo.
 
-### Pré-requisitos
+### Opção 1: Usando a Imagem Pronta do Docker Hub
 
--   [Docker](https://www.docker.com/get-started)
--   [Docker Compose](https://docs.docker.com/compose/install/)
+Esta é a forma mais rápida e simples. Você não precisa clonar o repositório, apenas ter o Docker e o Docker Compose instalados.
 
-### Passos
+1.  **Crie um arquivo `docker-compose.yml`** com o seguinte conteúdo:
+
+    ```yaml
+    services:
+      calculadora-web:
+        image: rolim520/calculadora-cartoes:latest
+        ports:
+          - "5000:5000"
+        restart: unless-stopped
+    ```
+
+2.  **Inicie a aplicação** no mesmo diretório onde você criou o arquivo:
+
+    ```bash
+    docker compose up -d
+    ```
+
+3.  **Acesse a aplicação:**
+    Abra seu navegador e acesse [http://localhost:5000](https://www.google.com/search?q=http://localhost:5000).
+
+### Opção 2: Para Desenvolvimento
+
+Use esta opção se você deseja modificar o código-fonte.
 
 1.  **Clone este repositório:**
+
     ```bash
     git clone https://github.com/rolim520/Calculadora-Cartoes.git
     ```
 
 2.  **Navegue até o diretório do projeto:**
+
     ```bash
     cd Calculadora-Cartoes
     ```
 
 3.  **Inicie a aplicação com Docker Compose:**
+    Este comando irá construir a imagem localmente a partir do `Dockerfile`.
+
     ```bash
-    docker compose up -d
+    docker compose up -d --build
     ```
 
 4.  **Acesse a aplicação:**
-    Abra seu navegador e acesse [http://localhost:5000](http://localhost:5000).
+    Abra seu navegador e acesse [http://localhost:5000](https://www.google.com/search?q=http://localhost:5000).
 
-Pronto! A calculadora já está funcionando.
+-----
 
----
+## ⚙️ CI/CD com GitHub Actions
+
+Este projeto utiliza um fluxo de trabalho de Integração Contínua e Entrega Contínua (CI/CD) com o GitHub Actions.
+
+  - **Automação:** A cada `push` na branch `main`, uma Action é acionada automaticamente.
+  - **Build e Push:** O workflow constrói a imagem Docker da aplicação e a envia para o [Docker Hub](https://www.google.com/search?q=https://hub.docker.com/r/seu-usuario-docker-hub/calculadora-cartoes), garantindo que a tag `:latest` esteja sempre atualizada com a versão mais recente do código.
+
+-----
 
 ## 🛠️ Tecnologias Utilizadas
 
--   **Backend:**
-    -   [Python](https://www.python.org/)
-    -   [Flask](https://flask.palletsprojects.com/)
--   **Frontend:**
-    -   HTML5
-    -   CSS3
-    -   [Bootstrap 5](https://getbootstrap.com/)
--   **Containerização:**
-    -   [Docker](https://www.docker.com/)
-
+  - **Backend:**
+      - [Python](https://www.python.org/)
+      - [Flask](https://flask.palletsprojects.com/)
+  - **Frontend:**
+      - HTML5
+      - CSS3
+      - [Bootstrap 5](https://getbootstrap.com/)
+  - **Containerização e CI/CD:**
+      - [Docker](https://www.docker.com/)
+      - [GitHub Actions](https://github.com/features/actions)
