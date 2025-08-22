@@ -84,5 +84,46 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        // Função para carregar os dados do localStorage e preencher o formulário
+        function loadFormData() {
+            // Lista de todos os IDs dos campos do formulário que queremos salvar
+            const formFields = ['r1', 'r2', 'total_recharge', 'p1', 'p2', 'desired_difference'];
+
+            formFields.forEach(fieldId => {
+                const savedValue = localStorage.getItem(fieldId);
+                const inputElement = document.getElementById(fieldId);
+                
+                // Se um valor foi salvo anteriormente e o elemento existe na página, preenchemos
+                if (savedValue !== null && inputElement) {
+                    inputElement.value = savedValue;
+                }
+            });
+        }
+
+        // Função para salvar os dados de um campo específico no localStorage
+        function saveFormData(event) {
+            // event.target é o elemento que disparou o evento (o campo do formulário)
+            const inputElement = event.target;
+            localStorage.setItem(inputElement.id, inputElement.value);
+        }
+
+        // Adiciona os "escutadores de eventos" para que as funções sejam chamadas
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Carrega os dados salvos assim que a página estiver pronta
+            loadFormData();
+
+            // 2. Adiciona um "escutador" para cada campo do formulário
+            const formFields = ['r1', 'r2', 'total_recharge', 'p1', 'p2', 'desired_difference'];
+            
+            formFields.forEach(fieldId => {
+                const inputElement = document.getElementById(fieldId);
+                if (inputElement) {
+                    // A função saveFormData será chamada toda vez que o valor de um campo mudar
+                    inputElement.addEventListener('input', saveFormData);
+                }
+            });
+        });
+    </script>
 </body>
 </html>
