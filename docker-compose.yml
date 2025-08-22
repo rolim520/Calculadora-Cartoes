@@ -1,6 +1,6 @@
 services:
   calculadora-web:
-    image: your-dockerhub-username/calculadora-cartoes:latest
+    image: rolim520/calculadora-cartoes:latest
     ports:
       - "5000:5000"
     restart: unless-stopped
